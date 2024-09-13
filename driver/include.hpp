@@ -25,4 +25,5 @@
 #include <kernel/physical/cr3.hpp>
 
 #include <iat.hpp>
-
+#include <hooks.hpp>
+#include <ricochet.hpp>

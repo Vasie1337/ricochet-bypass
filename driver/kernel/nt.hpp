@@ -26,6 +26,25 @@ typedef struct _RTL_PROCESS_MODULES
 	RTL_PROCESS_MODULE_INFORMATION Modules[1];
 } RTL_PROCESS_MODULES, * PRTL_PROCESS_MODULES;
 
+typedef struct _CALLBACK_ENTRY {
+	unsigned short Version; // 0x0
+	unsigned short OperationRegistrationCount; // 0x2
+	DWORD unk1; // 0x4
+	PVOID RegistrationContext; // 0x8
+	UNICODE_STRING Altitude; // 0x10
+} CALLBACK_ENTRY, * PCALLBACK_ENTRY;
+
+typedef struct _CALLBACK_ENTRY_ITEM {
+	LIST_ENTRY CallbackList; // 0x0
+	OB_OPERATION Operations; // 0x10
+	DWORD Active; // 0x14
+	CALLBACK_ENTRY* CallbackEntry; // 0x18
+	PVOID ObjectType; // 0x20
+	POB_PRE_OPERATION_CALLBACK PreOperation; // 0x28
+	POB_POST_OPERATION_CALLBACK PostOperation; // 0x30
+	UINT64 unk1; // 0x38
+} CALLBACK_ENTRY_ITEM, * PCALLBACK_ENTRY_ITEM; // size: 0x40
+
 typedef enum _SYSTEM_INFORMATION_CLASS
 {
 	SystemBasicInformation,

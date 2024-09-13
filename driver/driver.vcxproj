@@ -136,6 +136,7 @@
     <ClCompile Include="driver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="hooks.hpp" />
     <ClInclude Include="iat.hpp" />
     <ClInclude Include="kernel\nt.hpp" />
     <ClInclude Include="defs.hpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="kernel\scanner.hpp" />
     <ClInclude Include="kernel\physical\cr3.hpp" />
     <ClInclude Include="kernel\physical\physical.hpp" />
+    <ClInclude Include="ricochet.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
