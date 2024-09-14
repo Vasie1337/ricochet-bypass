@@ -51,7 +51,7 @@ namespace iat
 		uintptr_t cr0 = __readcr0();
 		__writecr0(cr0 & ~(1 << 16));
 		
-		memcpy((void*)import_address, &hook, sizeof(uintptr_t));
+		crt::memcpy((void*)import_address, &hook, sizeof(uintptr_t));
 		
 		__writecr0(cr0);
 

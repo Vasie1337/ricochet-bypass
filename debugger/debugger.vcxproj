@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AACC46B5-9AD8-465C-BA0D-03109F9C43F6}</ProjectGuid>
+    <ProjectGuid>{873C395B-F465-4185-83AF-06816BFADA79}</ProjectGuid>
     <TemplateGuid>{dd38f7fc-d7bd-488b-9242-7d8754cde80d}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <Configuration>Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">x64</Platform>
-    <RootNamespace>driver</RootNamespace>
+    <RootNamespace>debugger</RootNamespace>
     <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
-    <ProjectName>driver</ProjectName>
+    <ProjectName>debugger</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -134,9 +134,11 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="driver.cpp" />
+    <ClCompile Include="debugger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="hooks.hpp" />
+    <ClInclude Include="iat.hpp" />
     <ClInclude Include="kernel\nt.hpp" />
     <ClInclude Include="defs.hpp" />
     <ClInclude Include="include.hpp" />
@@ -145,6 +147,7 @@
     <ClInclude Include="kernel\scanner.hpp" />
     <ClInclude Include="kernel\physical\cr3.hpp" />
     <ClInclude Include="kernel\physical\physical.hpp" />
+    <ClInclude Include="ricochet.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

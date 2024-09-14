@@ -75,24 +75,28 @@ int main()
 
 	std::wcout << L"Module base address: " << std::hex << baseAddress << std::endl;
 
-	BYTE buffer[4];
-	SIZE_T bytesRead;
-	if (!ReadProcessMemory(hProcess, (LPCVOID)baseAddress, buffer, sizeof(buffer), &bytesRead))
+	while (true)
 	{
-		std::wcout << L"Failed to read memory" << std::endl;
-		return 1;
-	}
+		BYTE buffer[4];
+		SIZE_T bytesRead;
+		if (!ReadProcessMemory(hProcess, (LPCVOID)baseAddress, buffer, sizeof(buffer), &bytesRead))
+		{
+			std::wcout << L"Failed to read memory" << std::endl;
+			return 1;
+		}
 
-	std::wcout << L"Read " << bytesRead << L" bytes" << std::endl;
+		std::wcout << L"Read " << bytesRead << L" bytes" << std::endl;
 
-	for (int i = 0; i < 4; i++)
-	{
-		std::wcout << std::hex << (int)buffer[i] << L" ";
+		for (int i = 0; i < 4; i++)
+		{
+			std::wcout << std::hex << (int)buffer[i] << L" ";
+		}
+		std::wcout << std::endl;
+
+		Sleep(3000);
 	}
-	std::wcout << std::endl;
 
 	CloseHandle(hProcess);
-
 
 	return 0;
 }
