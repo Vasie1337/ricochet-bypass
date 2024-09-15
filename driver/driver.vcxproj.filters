@@ -14,5 +14,7 @@
     <ClInclude Include="kernel\physical\cr3.hpp" />
     <ClInclude Include="codecave.hpp" />
     <ClInclude Include="hook.hpp" />
+    <ClInclude Include="handler.hpp" />
+    <ClInclude Include="..\.shared\shared.hpp" />
   </ItemGroup>
 </Project>

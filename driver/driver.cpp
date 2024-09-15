@@ -16,7 +16,7 @@ auto entry(void* a1, void* a2) -> NTSTATUS
 		return false;
 	}
 
-	if (!codecave::setup(code_cave, hook::handler))
+	if (!codecave::setup(code_cave, hook::hooked))
 	{
 		printf("Failed to setup code cave\n");
 		return false;

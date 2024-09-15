@@ -3,4 +3,7 @@
   <ItemGroup>
     <ClCompile Include="client.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\.shared\shared.hpp" />
+  </ItemGroup>
 </Project>

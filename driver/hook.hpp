@@ -3,19 +3,25 @@
 
 namespace hook
 {
-	static inline __int64(__fastcall* original_ptr)(__int64 a1);
-	__int64 handler(__int64 a1)
+	static inline __int64(__fastcall* original_ptr)(void* a1);
+	__int64 hooked(void* a1)
 	{
-		if (a1 != 0x1337)
+		if (!a1 || !MmIsAddressValid(a1))
 			return original_ptr(a1);
 
-		printf("Hooked that nigga: %llx\n", a1);
+		_comm_data data = { 0 };
+		crt::memcpy(&data, a1, sizeof(_comm_data));
+
+		if (data.magic != 0x1337)
+			return original_ptr(a1);
+
+		handler::pass(data);
 
 		return 0;
 	}
 
-	const char pattern[] = "\x48\x83\xEC\x38\x48\x8B\x05\x01\xFB";
-	const char mask[] = "xxxxxxxxx";
+	constexpr char pattern[] = "\x48\x83\xEC\x38\x48\x8B\x05\x01\xFB";
+	constexpr char mask[] = "xxxxxxxxx";
 
 	bool setup(modules::DATA_ENTRY module, void* target)
 	{
@@ -42,8 +48,9 @@ namespace hook
 		uint64 target_address = function + 7 + 4 + *displacement_ptr;
 
 		*(void**)&original_ptr = _InterlockedExchangePointer((void**)target_address, target);
+
 		printf("Original function at: %p\n", original_ptr);
-		printf("Target address: %p\n", target_address);
+		printf("Target address: %llx\n", target_address);
 
 		KeUnstackDetachProcess(&apc);
 
