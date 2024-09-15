@@ -20,8 +20,11 @@ namespace hook
 		return 0;
 	}
 
-	constexpr char pattern[] = "\x48\x83\xEC\x38\x48\x8B\x05\x01\xFB";
-	constexpr char mask[] = "xxxxxxxxx";
+	const char* pattern_list[] = {
+		"\x48\x83\xEC\x38\x48\x8B\x05\x01\xFB", // 22H2
+		"\x48\x83\xEC\x38\x48\x8B\x05\x89\x8A", // 23H2
+	};
+	const char mask[] = "xxxxxxxxx";
 
 	bool setup(modules::DATA_ENTRY module, void* target)
 	{
@@ -35,7 +38,14 @@ namespace hook
 		KAPC_STATE apc = { 0 };
 		KeStackAttachProcess(winlogon, &apc);
 
-		const uint64 function = scanner::find_pattern(module.base, module.size, pattern, mask);
+		uint64 function = 0;
+		for (auto pattern : pattern_list)
+		{
+			function = scanner::find_pattern(module.base, module.size, pattern, mask);
+			if (function)
+				break;
+		}
+
 		if (!function)
 		{
 			printf("Failed to find pattern\n");
