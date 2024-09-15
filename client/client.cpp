@@ -61,7 +61,6 @@ public:
 
 		send_request(&data);
 	}
-
 	void write(void* dst, void* src, size_t size)
 	{
 		_comm_data data = { 0 };
@@ -72,65 +71,50 @@ public:
 
 		send_request(&data);
 	}
-
 	void* get_cr3()
 	{
 		void* cr3 = nullptr;
-
 		_comm_data data = { 0 };
 		data.type = _comm_type::cr3;
 		data.src_address = &cr3;
 		send_request(&data);
-
 		return cr3;
 	}
-
 	void* get_base()
 	{
 		void* base = nullptr;
-
 		_comm_data data = { 0 };
 		data.type = _comm_type::base;
 		data.src_address = &base;
 		send_request(&data);
-
 		return base;
 	}
-
 	template <typename T>
-	T read(void* src)
+	T read(uint64_t src)
 	{
 		T buffer = { 0 };
-		read(&buffer, src, sizeof(T));
+		read(&buffer, reinterpret_cast<void*>(src), sizeof(T));
 		return buffer;
 	}
 	template <typename T>
-	void write(void* dst, T value)
+	void write(uint64_t dst, T value)
 	{
-		write(dst, &value, sizeof(T));
+		write(reinterpret_cast<void*>(dst), &value, sizeof(T));
 	}
 };
 
 int main() 
 {
-	driver_handler handler(GetCurrentProcessId());
+	driver_handler handler(0x1C24);
 	auto base = handler.get_base();
 	auto cr3 = handler.get_cr3();
 
 	printf("Base: %p\n", base);
 	printf("CR3: %p\n", cr3);
 
-	// tests
-	uint64_t test = handler.read<uint64_t>(base);
-	printf("Test: %p\n", test);
-
-	// write test
-	int buffer = 0;
-	handler.write<int>(&buffer, 873658);
-	printf("Buffer: %d\n", buffer);
-
-	system("pause");
-
+	// read test
+	int test = handler.read<int>(0x07B8466C);
+	printf("Test: %d\n", test);
 
 	return 0;
 }
