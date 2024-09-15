@@ -12,8 +12,5 @@
     <ClInclude Include="kernel\nt.hpp" />
     <ClInclude Include="kernel\physical\physical.hpp" />
     <ClInclude Include="kernel\physical\cr3.hpp" />
-    <ClInclude Include="iat.hpp" />
-    <ClInclude Include="hooks.hpp" />
-    <ClInclude Include="ricochet.hpp" />
   </ItemGroup>
 </Project>

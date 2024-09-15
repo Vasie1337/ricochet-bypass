@@ -39,7 +39,7 @@ namespace modules
 		return Modules;
 	}
 
-	DATA_ENTRY get_kernel_module(const char* module_name)
+	DATA_ENTRY get_module(const char* module_name)
 	{
 		DATA_ENTRY entry = { 0 };
 
@@ -49,11 +49,16 @@ namespace modules
 
 		for (ULONG i = 0; i < Modules->NumberOfModules; i++)
 		{
-			printf("Module: %s\n", to_lower_c((const char*)Modules->Modules[i].FullPathName));
-			if (crt::strstr(to_lower_c((const char*)Modules->Modules[i].FullPathName), module_name))
+			const char* module = strrchr((const char*)Modules->Modules[i].FullPathName, '\\');
+			if (!module)
+				continue;
+
+			module += 1;
+
+			if (!crt::strcmp(module, module_name))
 			{
 				entry.base = (uint64)Modules->Modules[i].ImageBase;
-				entry.size = (uint64)Modules->Modules[i].ImageSize;
+				entry.size = Modules->Modules[i].ImageSize;
 				break;
 			}
 		}
@@ -139,5 +144,36 @@ namespace modules
 		printf("Driver dumped\n");
 
 		return true;
+	}
+
+	PEPROCESS get_eprocess(const char* process_name)
+	{
+		PEPROCESS sys_process = PsInitialSystemProcess;
+		PEPROCESS curr_entry = sys_process;
+
+		char image_name[15];
+
+		do
+		{
+			crt::memcpy((void*)(&image_name), (void*)((uintptr_t)curr_entry + 0x5a8), sizeof(image_name));
+
+			if (crt::strcmp(image_name, process_name) == 0)
+			{
+				uint32 active_threads;
+
+				crt::memcpy((void*)&active_threads, (void*)((uintptr_t)curr_entry + 0x5f0), sizeof(active_threads));
+
+				if (active_threads)
+				{
+					return curr_entry;
+				}
+			}
+
+			PLIST_ENTRY list = (PLIST_ENTRY)((uintptr_t)(curr_entry)+0x448);
+			curr_entry = (PEPROCESS)((uintptr_t)list->Flink - 0x448);
+
+		} while (curr_entry != sys_process);
+
+		return 0;
 	}
 }

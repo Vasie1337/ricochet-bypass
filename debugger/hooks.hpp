@@ -66,8 +66,6 @@ namespace hooks
 		ULONG RequestorProcessId = IoGetRequestorProcessId(Irp);
 		printf("Request came from process ID: %lu\n", RequestorProcessId);
 
-		__debugbreak();
-
 		IofCompleteRequest(Irp, PriorityBoost);
 	}
 }
