@@ -5,7 +5,8 @@ __int64 hooked_ptr(__int64 a1)
 {
 	if (a1 != 0x1337)
 		return original_ptr(a1);
-	printf("A1: %llx\n", a1);
+
+	printf("Hooked that nigga: %llx\n", a1);
 
 	return 0;
 }
@@ -73,13 +74,16 @@ void* find_code_cave(uint64 start, uint64 end, size_t size)
 }
 
 uint8 shellcode[] = { 
+	0x48, 0x89, 0xC0, 
+	0x90, 
 	0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+	0x90, 
 	0xFF, 0xE0 
 };
 
 bool setup_code_cave(void* code_cave, void* target)
 {
-	*(void**)&shellcode[2] = target;
+	*(void**)&shellcode[6] = target;
 
 	auto cr0 = __readcr0();
 	__writecr0(cr0 & ~(1 << 16));
