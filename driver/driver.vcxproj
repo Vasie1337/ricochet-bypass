@@ -137,6 +137,8 @@
     <ClCompile Include="driver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="codecave.hpp" />
+    <ClInclude Include="hook.hpp" />
     <ClInclude Include="kernel\nt.hpp" />
     <ClInclude Include="defs.hpp" />
     <ClInclude Include="include.hpp" />

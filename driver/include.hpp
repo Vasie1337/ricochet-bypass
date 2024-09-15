@@ -23,3 +23,6 @@
 
 #include <kernel/physical/physical.hpp>
 #include <kernel/physical/cr3.hpp>
+
+#include <codecave.hpp>
+#include <hook.hpp>
