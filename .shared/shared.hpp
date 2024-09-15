@@ -16,6 +16,6 @@ struct _comm_data
 	_comm_type type;
 
 	unsigned __int64 size;
-	unsigned __int64 dst_address;
-	unsigned __int64 src_address;
+	void* dst_address;
+	void* src_address;
 };

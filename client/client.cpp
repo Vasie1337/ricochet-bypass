@@ -2,8 +2,6 @@
 #include <Windows.h>
 #include <iostream>
 
-
-
 class handler
 {
 public:
@@ -55,29 +53,84 @@ public:
 
 	void read(void* dst, void* src, size_t size)
 	{
-		_comm_data data;
+		_comm_data data = { 0 };
 		data.type = _comm_type::read;
 		data.size = size;
-		data.dst_address = reinterpret_cast<unsigned __int64>(dst);
-		data.src_address = reinterpret_cast<unsigned __int64>(src);
+		data.dst_address = dst;
+		data.src_address = src;
+
 		send_request(&data);
 	}
 
 	void write(void* dst, void* src, size_t size)
 	{
-		_comm_data data;
+		_comm_data data = { 0 };
 		data.type = _comm_type::write;
 		data.size = size;
-		data.dst_address = reinterpret_cast<unsigned __int64>(dst);
-		data.src_address = reinterpret_cast<unsigned __int64>(src);
+		data.dst_address = dst;
+		data.src_address = src;
+
 		send_request(&data);
 	}
 
+	void* get_cr3()
+	{
+		void* cr3 = nullptr;
 
+		_comm_data data = { 0 };
+		data.type = _comm_type::cr3;
+		data.src_address = &cr3;
+		send_request(&data);
+
+		return cr3;
+	}
+
+	void* get_base()
+	{
+		void* base = nullptr;
+
+		_comm_data data = { 0 };
+		data.type = _comm_type::base;
+		data.src_address = &base;
+		send_request(&data);
+
+		return base;
+	}
+
+	template <typename T>
+	T read(void* src)
+	{
+		T buffer = { 0 };
+		read(&buffer, src, sizeof(T));
+		return buffer;
+	}
+	template <typename T>
+	void write(void* dst, T value)
+	{
+		write(dst, &value, sizeof(T));
+	}
 };
 
 int main() 
 {
+	driver_handler handler(GetCurrentProcessId());
+	auto base = handler.get_base();
+	auto cr3 = handler.get_cr3();
+
+	printf("Base: %p\n", base);
+	printf("CR3: %p\n", cr3);
+
+	// tests
+	uint64_t test = handler.read<uint64_t>(base);
+	printf("Test: %p\n", test);
+
+	// write test
+	int buffer = 0;
+	handler.write<int>(&buffer, 873658);
+	printf("Buffer: %d\n", buffer);
+
+	system("pause");
+
 
 	return 0;
 }
