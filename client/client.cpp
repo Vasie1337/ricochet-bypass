@@ -105,16 +105,13 @@ public:
 
 int main() 
 {
-	driver_handler handler(0x1C24);
+	driver_handler handler(GetCurrentProcessId());
 	auto base = handler.get_base();
 	auto cr3 = handler.get_cr3();
 
 	printf("Base: %p\n", base);
 	printf("CR3: %p\n", cr3);
 
-	// read test
-	int test = handler.read<int>(0x07B8466C);
-	printf("Test: %d\n", test);
 
 	return 0;
 }

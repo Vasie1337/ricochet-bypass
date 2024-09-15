@@ -138,7 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\.shared\shared.hpp" />
-    <ClInclude Include="codecave.hpp" />
     <ClInclude Include="handler.hpp" />
     <ClInclude Include="hook.hpp" />
     <ClInclude Include="kernel\nt.hpp" />

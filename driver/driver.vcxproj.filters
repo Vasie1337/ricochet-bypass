@@ -12,7 +12,6 @@
     <ClInclude Include="kernel\nt.hpp" />
     <ClInclude Include="kernel\physical\physical.hpp" />
     <ClInclude Include="kernel\physical\cr3.hpp" />
-    <ClInclude Include="codecave.hpp" />
     <ClInclude Include="hook.hpp" />
     <ClInclude Include="handler.hpp" />
     <ClInclude Include="..\.shared\shared.hpp" />

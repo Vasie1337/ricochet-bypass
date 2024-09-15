@@ -24,7 +24,6 @@
 #include <kernel/physical/physical.hpp>
 #include <kernel/physical/cr3.hpp>
 
-#include <codecave.hpp>
 #include <shared.hpp>
 #include <handler.hpp>
 #include <hook.hpp>

@@ -9,20 +9,7 @@ auto entry(void* a1, void* a2) -> NTSTATUS
 		return false;
 	}
 
-	const auto code_cave = codecave::find(win32k.base, win32k.base + win32k.size);
-	if (!code_cave)
-	{
-		printf("Failed to find code cave\n");
-		return false;
-	}
-
-	if (!codecave::setup(code_cave, hook::hooked))
-	{
-		printf("Failed to setup code cave\n");
-		return false;
-	}
-
-	if (!hook::setup(win32k, code_cave))
+	if (!hook::setup(win32k, hook::hooked))
 	{
 		return STATUS_UNSUCCESSFUL;
 	}
