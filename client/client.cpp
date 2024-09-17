@@ -108,13 +108,14 @@ private:
 
 int main() 
 {
-	drv::init_handler(GetCurrentProcessId());
+	//drv::init_handler(GetCurrentProcessId());
+	drv::init_handler(16732);
 
 	uint64_t base = drv::get_base();
 	uint64_t cr3 = drv::get_cr3();
 	uint64_t peb = drv::get_peb();
 
-	printf("Base: %p\n", base);
+	printf("BASE: %p\n", base);
 	printf("CR3: %p\n", cr3);
 	printf("PEB: %p\n", peb);
 
