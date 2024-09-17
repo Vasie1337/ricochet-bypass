@@ -5,7 +5,8 @@ enum class _comm_type
 	read,
 	write,
 	base,
-	cr3
+	cr3,
+	peb,
 };
 
 struct _comm_data

@@ -54,6 +54,12 @@ namespace handler
 			crt::memcpy(data.src_address, &physical::cr3::StoredCr3, sizeof(physical::cr3::StoredCr3));
 			break;
 		}
+		case _comm_type::peb:
+		{
+			void* peb = PsGetProcessPeb(target_process);
+			crt::memcpy(data.src_address, &peb, sizeof(peb));
+			break;
+		}
 		default:
 			printf("Invalid req type\n");
 			break;

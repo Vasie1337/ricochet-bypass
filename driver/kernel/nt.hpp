@@ -149,4 +149,6 @@ NTSTATUS NTAPI IoCreateDriver(PUNICODE_STRING DriverName, PDRIVER_INITIALIZE Ini
 
 void* NTAPI PsGetProcessSectionBaseAddress(PEPROCESS Process);
 
+void* NTAPI PsGetProcessPeb(PEPROCESS Process);
+
 EXTERN_C_END
