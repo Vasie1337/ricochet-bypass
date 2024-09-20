@@ -11,6 +11,7 @@ namespace hook
 
 		_comm_data data = { 0 };
 		crt::memcpy(&data, a1, sizeof(_comm_data));
+		xor_comm_data(&data);
 
 		if (data.magic != 0x1337)
 			return original_ptr(a1);

@@ -1,19 +1,27 @@
-#include <../.shared/shared.hpp>
 #include <Windows.h>
 #include <iostream>
+#include <thread>
+
+#include <../.shared/shared.hpp>
 
 class drv
 {
 public:
-	static bool init_handler(unsigned int pid)
+	static bool init_handler(std::string proc_name)
 	{
-		target_pid = pid;
-
-		if (!get())
+		if (!init())
 		{
 			printf("Failed to get handler\n");
 			return false;
 		}
+
+		target_proc = get_proc(proc_name.c_str());
+		if (!target_proc)
+		{
+			printf("Failed to get target process\n");
+			return false;
+		}
+
 		return true;
 	}
 	static void read(void* dst, void* src, size_t size)
@@ -63,6 +71,16 @@ public:
 		send_request(&data);
 		return peb;
 	}
+	static auto get_proc(const char* proc_name) -> uint64_t
+	{
+		uint64_t proc = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::proc;
+		memcpy(data.str_buffer, proc_name, strlen(proc_name));
+		data.src_address = &proc;
+		send_request(&data);
+		return proc;
+	}
 	template <typename T>
 	static T read(uint64_t src)
 	{
@@ -77,7 +95,7 @@ public:
 	}
 protected:
 	typedef __int64(__fastcall* thandler)(void* a1);
-	static bool get()
+	static bool init()
 	{
 		LoadLibraryA("user32.dll");
 
@@ -98,33 +116,37 @@ protected:
 	static void send_request(_comm_data* data)
 	{
 		data->magic = 0x1337;
-		data->target_pid = target_pid;
+		data->target_proc = reinterpret_cast<void*>(target_proc);
+		xor_comm_data(data);
 		handlerobj(data);
 	}
 private:
+	
 	static inline thandler handlerobj;
-	static inline unsigned int target_pid;
+	static inline uint64_t target_proc;
 };
 
 int main() 
 {
-	//drv::init_handler(GetCurrentProcessId());
-	drv::init_handler(16732);
+	if (!drv::init_handler("notepad.exe"))
+	{
+		printf("Failed to init handler\n");
+		return 0;
+	}
 
 	uint64_t base = drv::get_base();
 	uint64_t cr3 = drv::get_cr3();
 	uint64_t peb = drv::get_peb();
 
-	printf("BASE: %p\n", base);
-	printf("CR3: %p\n", cr3);
-	printf("PEB: %p\n", peb);
+	printf("BASE: %llx\n", base);
+	printf("CR3: %llx\n", cr3);
+	printf("PEB: %llx\n", peb);
 
 	while (true)
 	{
-		auto test = drv::read<uint64_t>(base);
-
-		printf("test: %llx\n", test);
-		Sleep(1000);
+		short test = drv::read<short>(base);
+		printf("test: %lx\n", test);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
 	return 0;
