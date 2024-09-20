@@ -1,6 +1,6 @@
 #include <include.hpp>
 
-auto entry(void* a1, void* a2) -> NTSTATUS
+NTSTATUS entry(void* a1, void* a2)
 {
 	const auto win32k = modules::get_module("win32k.sys");
 	if (!win32k)
