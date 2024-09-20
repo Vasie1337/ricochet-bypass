@@ -31,7 +31,6 @@ public:
 		data.size = size;
 		data.dst_address = dst;
 		data.src_address = src;
-
 		send_request(&data);
 	}
 	static void write(void* dst, void* src, size_t size)
@@ -41,7 +40,6 @@ public:
 		data.size = size;
 		data.dst_address = dst;
 		data.src_address = src;
-
 		send_request(&data);
 	}
 	static auto get_cr3() -> uint64_t
@@ -128,10 +126,10 @@ private:
 
 int main() 
 {
-	if (!drv::init_handler("notepad.exe"))
+	if (!drv::init_handler("cod22-cod.exe"))
 	{
 		printf("Failed to init handler\n");
-		return 0;
+		return std::getchar();
 	}
 
 	uint64_t base = drv::get_base();
