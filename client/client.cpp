@@ -22,8 +22,35 @@ public:
 			return false;
 		}
 
+		target_base = get_base();
+		if (!target_base)
+		{
+			printf("Failed to get target base\n");
+			return false;
+		}
+
+		target_cr3 = get_cr3();
+		if (!target_cr3)
+		{
+			printf("Failed to get target cr3\n");
+			return false;
+		}
+
+		target_peb = get_peb();
+		if (!target_peb)
+		{
+			printf("Failed to get target peb\n");
+			return false;
+		}
+
 		return true;
 	}
+
+	static auto proc() -> uint64_t { return target_proc; }
+	static auto base() -> uint64_t { return target_base; }
+	static auto cr3() -> uint64_t { return target_cr3; }
+	static auto peb() -> uint64_t { return target_peb; }
+
 	static void read(void* dst, void* src, size_t size)
 	{
 		_comm_data data = { 0 };
@@ -33,6 +60,15 @@ public:
 		data.src_address = src;
 		send_request(&data);
 	}
+
+	template <typename T>
+	static T read(uint64_t src)
+	{
+		T buffer = { 0 };
+		read(&buffer, reinterpret_cast<void*>(src), sizeof(T));
+		return buffer;
+	}
+
 	static void write(void* dst, void* src, size_t size)
 	{
 		_comm_data data = { 0 };
@@ -42,57 +78,14 @@ public:
 		data.src_address = src;
 		send_request(&data);
 	}
-	static auto get_cr3() -> uint64_t
-	{
-		uint64_t cr3 = 0;
-		_comm_data data = { 0 };
-		data.type = _comm_type::cr3;
-		data.src_address = &cr3;
-		send_request(&data);
-		return cr3;
-	}
-	static auto get_base() -> uint64_t
-	{
-		uint64_t base = 0;
-		_comm_data data = { 0 };
-		data.type = _comm_type::base;
-		data.src_address = &base;
-		send_request(&data);
-		return base;
-	}
-	static auto get_peb() -> uint64_t
-	{
-		uint64_t peb = 0;
-		_comm_data data = { 0 };
-		data.type = _comm_type::peb;
-		data.src_address = &peb;
-		send_request(&data);
-		return peb;
-	}
-	static auto get_proc(const char* proc_name) -> uint64_t
-	{
-		uint64_t proc = 0;
-		_comm_data data = { 0 };
-		data.type = _comm_type::proc;
-		memcpy(data.str_buffer, proc_name, strlen(proc_name));
-		data.src_address = &proc;
-		send_request(&data);
-		return proc;
-	}
-	template <typename T>
-	static T read(uint64_t src)
-	{
-		T buffer = { 0 };
-		read(&buffer, reinterpret_cast<void*>(src), sizeof(T));
-		return buffer;
-	}
+	
 	template <typename T>
 	static void write(uint64_t dst, T value)
 	{
 		write(reinterpret_cast<void*>(dst), &value, sizeof(T));
 	}
+
 protected:
-	typedef __int64(__fastcall* thandler)(void* a1);
 	static bool init()
 	{
 		LoadLibraryA("user32.dll");
@@ -118,10 +111,51 @@ protected:
 		xor_comm_data(data);
 		handlerobj(data);
 	}
+	static uint64_t get_cr3()
+	{
+		uint64_t cr3 = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::cr3;
+		data.src_address = &cr3;
+		send_request(&data);
+		return cr3;
+	}
+	static uint64_t get_base()
+	{
+		uint64_t base = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::base;
+		data.src_address = &base;
+		send_request(&data);
+		return base;
+	}
+	static uint64_t get_peb()
+	{
+		uint64_t peb = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::peb;
+		data.src_address = &peb;
+		send_request(&data);
+		return peb;
+	}
+	static uint64_t get_proc(const char* proc_name)
+	{
+		uint64_t proc = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::proc;
+		memcpy(data.str_buffer, proc_name, strlen(proc_name));
+		data.src_address = &proc;
+		send_request(&data);
+		return proc;
+	}
 private:
-	
+	typedef __int64(__fastcall* thandler)(void* a1);
 	static inline thandler handlerobj;
+
 	static inline uint64_t target_proc;
+	static inline uint64_t target_base;
+	static inline uint64_t target_cr3;
+	static inline uint64_t target_peb;
 };
 
 int main() 
@@ -129,23 +163,32 @@ int main()
 	if (!drv::init_handler("cod22-cod.exe"))
 	{
 		printf("Failed to init handler\n");
-		return std::getchar();
+		return 1;
 	}
 
-	uint64_t base = drv::get_base();
-	uint64_t cr3 = drv::get_cr3();
-	uint64_t peb = drv::get_peb();
+	uint64_t proc = drv::proc();
+	uint64_t base = drv::base();
+	uint64_t cr3 = drv::cr3();
+	uint64_t peb = drv::peb();
 
+	printf("PROC: %llx\n", proc);
 	printf("BASE: %llx\n", base);
 	printf("CR3: %llx\n", cr3);
 	printf("PEB: %llx\n", peb);
+	printf("\n");
 
-	while (true)
+	short signature = drv::read<short>(base);
+	if (signature != IMAGE_DOS_SIGNATURE)
 	{
-		short test = drv::read<short>(base);
-		printf("test: %lx\n", test);
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		printf("Failed to read DOS signature\n");
+		return 1;
 	}
+
+	IMAGE_DOS_HEADER dos_header = drv::read<IMAGE_DOS_HEADER>(base);
+	IMAGE_NT_HEADERS nt_headers = drv::read<IMAGE_NT_HEADERS>(base + dos_header.e_lfanew);
+
+	printf("IMAGE_BASE: %llx\n", base);
+	printf("IMAGE_SIZE: %lx\n", nt_headers.OptionalHeader.SizeOfImage);
 
 	return 0;
 }
