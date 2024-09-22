@@ -3,6 +3,16 @@
 
 namespace handler
 {
+	void wcharToChar(const wchar_t* s1, char* out_char, size_t max_len) 
+	{
+		size_t i = 0;
+		while (s1[i] != L'\0' && i < max_len - 1) {
+			out_char[i] = static_cast<char>(s1[i]);
+			i++;
+		}
+		out_char[i] = '\0';
+	}
+
 	void pass(_comm_data data)
 	{
 		PEPROCESS target_process = reinterpret_cast<PEPROCESS>(data.target_proc);
@@ -39,13 +49,60 @@ namespace handler
 		}
 		case _comm_type::base:
 		{
-			void* base = PsGetProcessSectionBaseAddress(target_process);
-			if (!base)
+			KAPC_STATE apc_state;
+			KeStackAttachProcess(target_process, &apc_state);
+
+			PPEB pPeb = (PPEB)PsGetProcessPeb(target_process);
+			if (!pPeb)
 			{
-				printf("Failed to get base\n");
 				return;
 			}
-			crt::memcpy(data.src_address, &base, sizeof(base));
+
+			LARGE_INTEGER time = { 0 };
+			time.QuadPart = -250ll * 10 * 1000;
+
+			for (INT i = 0; !pPeb->Ldr && i < 10; i++)
+			{
+				KeDelayExecutionThread(KernelMode, TRUE, &time);
+			}
+
+			if (!pPeb->Ldr)
+			{
+				return;
+			}
+
+			for (int i = 0; i < sizeof(data.str_buffer); i++)
+			{
+				data.str_buffer[i] = tolower(data.str_buffer[i]);
+			}
+
+			PVOID result = nullptr;
+			for (PLIST_ENTRY pListEntry = pPeb->Ldr->InLoadOrderModuleList.Flink;
+				pListEntry != &pPeb->Ldr->InLoadOrderModuleList;
+				pListEntry = pListEntry->Flink)
+			{
+				PLDR_DATA_TABLE_ENTRY pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
+
+				WCHAR buffer[1024] = { 0 };
+				crt::memcpy(buffer, pEntry->BaseDllName.Buffer, pEntry->BaseDllName.Length);
+
+				char out_char[1024] = { 0 };
+				wcharToChar(buffer, out_char, 1024);
+
+				for (int i = 0; i < sizeof(out_char); i++)
+				{
+					out_char[i] = tolower(out_char[i]);
+				}
+
+				if (crt::strcmp(out_char, data.str_buffer) == 0)
+				{
+					result = pEntry->DllBase;
+					break;
+				}
+			}
+
+			KeUnstackDetachProcess(&apc_state);
+			crt::memcpy(data.src_address, &result, sizeof(result));
 			break;
 		}
 		case _comm_type::cr3:

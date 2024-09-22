@@ -22,7 +22,7 @@ public:
 			return false;
 		}
 
-		target_base = get_base();
+		target_base = get_base(proc_name.c_str());
 		if (!target_base)
 		{
 			printf("Failed to get target base\n");
@@ -120,11 +120,12 @@ protected:
 		send_request(&data);
 		return cr3;
 	}
-	static uint64_t get_base()
+	static uint64_t get_base(const char* mod_name)
 	{
 		uint64_t base = 0;
 		_comm_data data = { 0 };
 		data.type = _comm_type::base;
+		memcpy(data.str_buffer, mod_name, strlen(mod_name));
 		data.src_address = &base;
 		send_request(&data);
 		return base;
@@ -160,7 +161,7 @@ private:
 
 int main() 
 {
-	if (!drv::init_handler("cod22-cod.exe"))
+	if (!drv::init_handler("cod.exe"))
 	{
 		printf("Failed to init handler\n");
 		return 1;
@@ -177,18 +178,8 @@ int main()
 	printf("PEB: %llx\n", peb);
 	printf("\n");
 
-	short signature = drv::read<short>(base);
-	if (signature != IMAGE_DOS_SIGNATURE)
-	{
-		printf("Failed to read DOS signature\n");
-		return 1;
-	}
-
-	IMAGE_DOS_HEADER dos_header = drv::read<IMAGE_DOS_HEADER>(base);
-	IMAGE_NT_HEADERS nt_headers = drv::read<IMAGE_NT_HEADERS>(base + dos_header.e_lfanew);
-
-	printf("IMAGE_BASE: %llx\n", base);
-	printf("IMAGE_SIZE: %lx\n", nt_headers.OptionalHeader.SizeOfImage);
+	int gamemode = drv::read<int>(base + 0x11A693B0);
+	printf("gamemode: %d\n", gamemode);
 
 	return 0;
 }
