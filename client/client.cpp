@@ -178,13 +178,5 @@ int main()
 	printf("PEB: %llx\n", peb);
 	printf("\n");
 
-	// print file date stamp
-	auto dos_header = drv::read<IMAGE_DOS_HEADER>(base);
-	auto nt_headers = drv::read<IMAGE_NT_HEADERS>(base + dos_header.e_lfanew);
-	auto file_header = nt_headers.FileHeader;
-	auto time_date_stamp = file_header.TimeDateStamp;
-	printf("TimeDateStamp: %llx\n", time_date_stamp);
-
-
 	return 0;
 }
