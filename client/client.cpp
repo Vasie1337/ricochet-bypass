@@ -85,6 +85,15 @@ public:
 		write(reinterpret_cast<void*>(dst), &value, sizeof(T));
 	}
 
+	static void mouse(int x, int y)
+	{
+		_comm_data data = { 0 };
+		data.type = _comm_type::mouse;
+		data.mouse_data.x = x;
+		data.mouse_data.y = y;
+		send_request(&data);
+	}
+
 protected:
 	static bool init()
 	{
@@ -161,7 +170,7 @@ private:
 
 int main() 
 {
-	if (!drv::init_handler("cod.exe"))
+	if (!drv::init_handler("explorer.exe"))
 	{
 		printf("Failed to init handler\n");
 		return 1;
@@ -177,6 +186,8 @@ int main()
 	printf("CR3: %llx\n", cr3);
 	printf("PEB: %llx\n", peb);
 	printf("\n");
+
+	drv::mouse(100, 100);
 
 	return 0;
 }

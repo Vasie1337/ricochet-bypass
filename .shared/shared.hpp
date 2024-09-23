@@ -4,10 +4,17 @@ enum class _comm_type
 {
 	read,
 	write,
+	mouse,
 	base,
 	proc,
 	cr3,
 	peb,
+};
+
+struct _mouse_data
+{
+	int x;
+	int y;
 };
 
 struct _comm_data
@@ -22,6 +29,8 @@ struct _comm_data
 	void* src_address;
 
 	char str_buffer[128];
+
+	_mouse_data mouse_data;
 };
 
 constexpr int xor_key = 0x285;

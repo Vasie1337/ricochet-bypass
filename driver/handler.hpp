@@ -144,6 +144,13 @@ namespace handler
 			crt::memcpy(data.src_address, &target, sizeof(void*));
 			break;
 		}
+		case _comm_type::mouse:
+		{
+			printf("Mouse data: %d %d\n", data.mouse_data.x, data.mouse_data.y);
+			mouse::send_input();
+
+			break;
+		}
 		default:
 			printf("Invalid req type\n");
 			break;
