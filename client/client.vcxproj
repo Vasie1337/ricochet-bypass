@@ -74,12 +74,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir).shared\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\;$(SolutionDir).shared\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir).shared\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\;$(SolutionDir).shared\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="include.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\.shared\shared.hpp" />

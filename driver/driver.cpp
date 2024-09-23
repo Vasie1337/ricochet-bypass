@@ -8,13 +8,7 @@ NTSTATUS entry(void* a1, void* a2)
 		printf("Failed to get win32k.sys module\n");
 		return STATUS_UNSUCCESSFUL;
 	}
-
-	if (!mouse::init())
-	{
-		printf("Failed to init mouse\n");
-		return STATUS_UNSUCCESSFUL;
-	}
-
+	
 	if (!hook::setup(win32k, hook::hooked))
 	{
 		printf("Failed to setup hook\n");

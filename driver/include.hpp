@@ -20,7 +20,6 @@
 #include <kernel/crt.hpp>
 #include <kernel/scanner.hpp>
 #include <kernel/modules.hpp>
-#include <kernel/mouse.hpp>
 
 #include <kernel/physical/physical.hpp>
 #include <kernel/physical/cr3.hpp>

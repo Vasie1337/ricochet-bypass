@@ -1,8 +1,4 @@
-#include <Windows.h>
-#include <iostream>
-#include <thread>
-
-#include <../.shared/shared.hpp>
+#include <include.hpp>
 
 class drv
 {
@@ -83,15 +79,6 @@ public:
 	static void write(uint64_t dst, T value)
 	{
 		write(reinterpret_cast<void*>(dst), &value, sizeof(T));
-	}
-
-	static void mouse(int x, int y)
-	{
-		_comm_data data = { 0 };
-		data.type = _comm_type::mouse;
-		data.mouse_data.x = x;
-		data.mouse_data.y = y;
-		send_request(&data);
 	}
 
 protected:
@@ -187,7 +174,7 @@ int main()
 	printf("PEB: %llx\n", peb);
 	printf("\n");
 
-	drv::mouse(100, 100);
+
 
 	return 0;
 }
