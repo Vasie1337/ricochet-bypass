@@ -13,6 +13,37 @@ namespace handler
 		out_char[i] = '\0';
 	}
 
+	//ool check_module(PLDR_DATA_TABLE_ENTRY pEntry, PCWSTR name)
+	//
+	//	uint8* buffer = (uint8*)ExAllocatePool(NonPagedPool, pEntry->SizeOfImage);
+	//	if (!buffer)
+	//	{
+	//		printf("Failed to allocate memory\n");
+	//		return false;
+	//	}
+	//
+	//	RtlZeroMemory(buffer, pEntry->SizeOfImage);
+	//	RtlCopyMemory(buffer, (void*)pEntry->DllBase, pEntry->SizeOfImage);
+	//
+	//	PIMAGE_DOS_HEADER dos = (PIMAGE_DOS_HEADER)buffer;
+	//	PIMAGE_NT_HEADERS nt = (PIMAGE_NT_HEADERS)(buffer + dos->e_lfanew);
+	//	PIMAGE_SECTION_HEADER section = IMAGE_FIRST_SECTION(nt);
+	//
+	//	for (uint32 i = 0; i < nt->FileHeader.NumberOfSections; i++)
+	//	{
+	//		section->PointerToRawData = section->VirtualAddress;
+	//		section++;
+	//	}
+	//
+	//	if (!modules::dump_to_file(buffer, pEntry->SizeOfImage, name))
+	//	{
+	//		printf("Failed to dump driver\n");
+	//		return false;
+	//	}
+	//
+	//	return true;
+	//}
+
 	void pass(_comm_data data)
 	{
 		PEPROCESS target_process = reinterpret_cast<PEPROCESS>(data.target_proc);

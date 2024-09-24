@@ -89,6 +89,43 @@ namespace modules
 		return { 0 };
 	}
 
+	bool dump_to_file(uint8* buffer, size_t size, PCWSTR name)
+	{
+		HANDLE file = NULL;
+		OBJECT_ATTRIBUTES oa = { 0 };
+		UNICODE_STRING us;
+		IO_STATUS_BLOCK iosb;
+
+		WCHAR path[256] = { 0 };
+		wcscpy(path, L"\\??\\C:\\dump\\");
+		wcscat(path, name);
+
+		RtlInitUnicodeString(&us, path);
+		InitializeObjectAttributes(&oa, &us, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
+
+		NTSTATUS status = ZwCreateFile(&file, GENERIC_WRITE, &oa, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, 0, FILE_OVERWRITE_IF, FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
+		if (!NT_SUCCESS(status))
+		{
+			printf("Failed to create file\n");
+			printf("Status: %x\n", status);
+			ExFreePool(buffer);
+			return false;
+		}
+
+		ULONG bytes = 0;
+		status = ZwWriteFile(file, NULL, NULL, NULL, &iosb, buffer, size, NULL, NULL);
+		if (!NT_SUCCESS(status))
+		{
+			printf("Failed to write file\n");
+			ZwClose(file);
+			ExFreePool(buffer);
+			return false;
+		}
+
+		ZwClose(file);
+		ExFreePool(buffer);
+	}
+
 	bool dump_driver(modules::DATA_ENTRY entry)
 	{
 		uint8* buffer = (uint8*)ExAllocatePool(NonPagedPool, entry.size);
@@ -111,38 +148,12 @@ namespace modules
 			section++;
 		}
 
-		HANDLE file = NULL;
-		OBJECT_ATTRIBUTES oa = { 0 };
-		UNICODE_STRING us;
-		IO_STATUS_BLOCK iosb;
-
-		RtlInitUnicodeString(&us, L"\\??\\C:\\dumped_drv.sys");
-		InitializeObjectAttributes(&oa, &us, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
-
-		NTSTATUS status = ZwCreateFile(&file, GENERIC_WRITE, &oa, &iosb, NULL, FILE_ATTRIBUTE_NORMAL, 0, FILE_OVERWRITE_IF, FILE_SYNCHRONOUS_IO_NONALERT, NULL, 0);
-		if (!NT_SUCCESS(status))
+		if (!dump_to_file(buffer, entry.size, L"dumped_drv.sys"))
 		{
-			printf("Failed to create file\n");
-			printf("Status: %x\n", status);
-			ExFreePool(buffer);
+			printf("Failed to dump driver\n");
 			return false;
 		}
-
-		ULONG bytes = 0;
-		status = ZwWriteFile(file, NULL, NULL, NULL, &iosb, buffer, entry.size, NULL, NULL);
-		if (!NT_SUCCESS(status))
-		{
-			printf("Failed to write file\n");
-			ZwClose(file);
-			ExFreePool(buffer);
-			return false;
-		}
-
-		ZwClose(file);
-		ExFreePool(buffer);
-
-		printf("Driver dumped\n");
-
+		
 		return true;
 	}
 

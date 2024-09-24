@@ -70,7 +70,7 @@ NTSTATUS entry(uint64 p1, uint64 p2)
 	}
 #else
 	ricochet::disable_callback();
-	iat::hook("randgrid.sys", "IofCompleteRequest", hooks::hooked_IofCompleteRequest);
+
 	printf("Disabled callback\n");
 #endif
 

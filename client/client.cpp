@@ -157,7 +157,7 @@ private:
 
 int main() 
 {
-	if (!drv::init_handler("explorer.exe"))
+	if (!drv::init_handler("cod.exe"))
 	{
 		printf("Failed to init handler\n");
 		return 1;
