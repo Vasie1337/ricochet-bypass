@@ -50,6 +50,7 @@ namespace hook
 		if (!function)
 		{
 			printf("Failed to find pattern\n");
+			KeUnstackDetachProcess(&apc);
 			return false;
 		}
 
