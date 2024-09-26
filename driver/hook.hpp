@@ -24,6 +24,7 @@ namespace hook
 	const char* pattern_list[] = {
 		"\x48\x83\xEC\x38\x48\x8B\x05\x01\xFB", // 22H2
 		"\x48\x83\xEC\x38\x48\x8B\x05\x89\x8A", // 23H2
+		"\x48\x83\xEC\x38\x48\x8B\x05\xC1\xFA"  // 22H2 19045.3803
 	};
 	const char mask[] = "xxxxxxxxx";
 
