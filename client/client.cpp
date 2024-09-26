@@ -266,6 +266,17 @@ int main()
 	printf("PEB: %llx\n", peb);
 	printf("\n");
 
+	std::thread([&]()
+	{
+		while (true)
+		{
+			uint64_t base = drv::base();
+			short mz = drv::read<short>(base);
+			printf("MZ: %x\n", mz);
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+	}).detach();
+
 	overlay::create(GetModuleHandleA(0));
 
 	MSG msg;
