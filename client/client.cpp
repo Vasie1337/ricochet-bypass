@@ -1,8 +1,8 @@
 #include <include.hpp>
 
-int main() 
+int main()
 {
-	if (!drv::init_handler("notepad.exe"))
+	if (!drv::init_handler("explorer.exe"))
 	{
 		printf("Failed to init handler\n");
 		return 1;
@@ -13,7 +13,7 @@ int main()
 	uint64_t cr3 = drv::cr3();
 	uint64_t peb = drv::peb();
 	HANDLE pid = drv::pid(); 
-	
+
 	printf("PROC: %llx\n", proc);
 	printf("BASE: %llx\n", base);
 	printf("CR3: %llx\n", cr3);
@@ -24,6 +24,11 @@ int main()
 	{
 		while (true)
 		{
+			if (GetAsyncKeyState(VK_INSERT) & 1)
+			{
+				drv::move_mouse(100, 100);
+			}
+
 			uint64_t base = drv::base();
 			short mz = drv::read<short>(base);
 			printf("MZ: %x\n", mz);

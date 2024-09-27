@@ -192,10 +192,11 @@ typedef VOID(*MouseClassServiceCallbackFn)(PDEVICE_OBJECT DeviceObject, PMOUSE_I
 typedef struct _MOUSE_OBJECT {
 	PDEVICE_OBJECT mouse_device;
 	MouseClassServiceCallbackFn service_callback;
-	bool use_mouse;
 } MOUSE_OBJECT, * PMOUSE_OBJECT;
 
 MOUSE_OBJECT gMouseObject;
+
+extern "C" POBJECT_TYPE* IoDriverObjectType; // idk why this works but it does
 
 EXTERN_C_START
 
@@ -212,8 +213,6 @@ void* NTAPI PsGetProcessPeb(PEPROCESS Process);
 NTSTATUS
 ObReferenceObjectByName(__in PUNICODE_STRING ObjectName, __in ULONG Attributes, __in_opt PACCESS_STATE AccessState, __in_opt ACCESS_MASK DesiredAccess, __in POBJECT_TYPE ObjectType,
 	__in KPROCESSOR_MODE AccessMode, __inout_opt PVOID ParseContext, __out PVOID* Object);
-
-POBJECT_TYPE IoDriverObjectType;
 
 UINT64 _KeAcquireSpinLockAtDpcLevel;
 UINT64 _KeReleaseSpinLockFromDpcLevel;

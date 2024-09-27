@@ -157,7 +157,7 @@ namespace handler
 		}
 		case _comm_type::mouse:
 		{
-			mouse::set(data.mouse_data.flags, data.mouse_data.x, data.mouse_data.y);
+			mouse::set(data.mouse_data.x, data.mouse_data.y, data.mouse_data.flags, data.mouse_data.button_flags);
 			break;
 		}
 		default:

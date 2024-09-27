@@ -56,6 +56,11 @@ public:
 	static auto peb() -> uint64_t { return target_peb; }
 	static auto pid() -> HANDLE { return target_pid; }
 
+	static void move_mouse(int x, int y)
+	{
+		set_mouse(x, y, MOVE_RELATIVE, 0);
+	}
+
 	static void read(void* dst, void* src, size_t size)
 	{
 		_comm_data data = { 0 };
@@ -152,9 +157,13 @@ protected:
 		send_request(&data);
 		return proc;
 	}
-	static void set_mouse(int x, int y, unsigned short flags)
+	static void set_mouse(int x, int y, unsigned short flags, unsigned short button_flags)
 	{
-		_mouse_data mouse_data = { flags, x, y };
+		_mouse_data mouse_data = {};
+		mouse_data.x = x;
+		mouse_data.y = y;
+		mouse_data.flags = flags;
+		mouse_data.button_flags = button_flags;
 		_comm_data data = { 0 };
 		data.type = _comm_type::mouse;
 		data.mouse_data = mouse_data;
@@ -169,6 +178,18 @@ private:
 	static inline uint64_t target_cr3;
 	static inline uint64_t target_peb;
 	static inline HANDLE target_pid;
+
+	// Mouse flags
+
+	const static int MOVE_RELATIVE = 0;
+	const static int MOVE_ABSOLUTE = 1;
+	 
+	const static int LEFT_BUTTON_DOWN = 0x0001;
+	const static int LEFT_BUTTON_UP = 0x0002;
+	const static int RIGHT_BUTTON_DOWN = 0x0004;
+	const static int RIGHT_BUTTON_UP = 0x0008;
+	const static int MIDDLE_BUTTON_DOWN = 0x0010;
+	const static int MIDDLE_BUTTON_UP = 0x0020;
 };
 
 template<typename T>
