@@ -8,6 +8,7 @@ enum class _comm_type
 	proc,
 	cr3,
 	peb,
+	pid,
 };
 
 struct _comm_data

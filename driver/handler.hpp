@@ -175,6 +175,17 @@ namespace handler
 			crt::memcpy(data.src_address, &target, sizeof(void*));
 			break;
 		}
+		case _comm_type::pid:
+		{
+			HANDLE pid = PsGetProcessId(target_process);
+			if (!pid)
+			{
+				printf("Failed to get pid\n");
+				return;
+			}
+			crt::memcpy(data.src_address, &pid, sizeof(pid));
+			break;
+		}
 		default:
 			printf("Invalid req type\n");
 			break;

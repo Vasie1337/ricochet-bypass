@@ -39,6 +39,13 @@ public:
 			return false;
 		}
 
+		target_pid = get_pid();
+		if (!target_pid)
+		{
+			printf("Failed to get target pid\n");
+			return false;
+		}
+
 		return true;
 	}
 
@@ -46,6 +53,7 @@ public:
 	static auto base() -> uint64_t { return target_base; }
 	static auto cr3() -> uint64_t { return target_cr3; }
 	static auto peb() -> uint64_t { return target_peb; }
+	static auto pid() -> HANDLE { return target_pid; }
 
 	static void read(void* dst, void* src, size_t size)
 	{
@@ -135,6 +143,15 @@ protected:
 		send_request(&data);
 		return peb;
 	}
+	static HANDLE get_pid()
+	{
+		HANDLE pid = 0;
+		_comm_data data = { 0 };
+		data.type = _comm_type::pid;
+		data.src_address = &pid;
+		send_request(&data);
+		return pid;
+	}
 	static uint64_t get_proc(const char* proc_name)
 	{
 		uint64_t proc = 0;
@@ -153,6 +170,7 @@ private:
 	static inline uint64_t target_base;
 	static inline uint64_t target_cr3;
 	static inline uint64_t target_peb;
+	static inline HANDLE target_pid;
 };
 
 class overlay
@@ -249,7 +267,7 @@ public:
 
 int main() 
 {
-	if (!drv::init_handler("cod.exe"))
+	if (!drv::init_handler("notepad.exe"))
 	{
 		printf("Failed to init handler\n");
 		return 1;
@@ -259,11 +277,13 @@ int main()
 	uint64_t base = drv::base();
 	uint64_t cr3 = drv::cr3();
 	uint64_t peb = drv::peb();
+	HANDLE pid = drv::pid();
 	
 	printf("PROC: %llx\n", proc);
 	printf("BASE: %llx\n", base);
 	printf("CR3: %llx\n", cr3);
 	printf("PEB: %llx\n", peb);
+	printf("PID: %x\n", pid);
 	printf("\n");
 
 	std::thread([&]()
