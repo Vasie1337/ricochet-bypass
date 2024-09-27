@@ -14,9 +14,10 @@ enum class _comm_type
 
 struct _mouse_data
 {
-	short flags;
 	int x;
 	int y;
+	short flags;
+	short button_flags;
 };
 
 struct _comm_data // ik this is bad but i'm lazy

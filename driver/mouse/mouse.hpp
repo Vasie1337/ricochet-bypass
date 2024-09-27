@@ -7,10 +7,10 @@ namespace mouse
 {
 	bool open()
 	{
-        _KeAcquireSpinLockAtDpcLevel = reinterpret_cast<UINT64>(KeAcquireSpinLockAtDpcLevel);
-        _KeReleaseSpinLockFromDpcLevel = reinterpret_cast<UINT64>(KeReleaseSpinLockFromDpcLevel);
-        _IofCompleteRequest = reinterpret_cast<UINT64>(IofCompleteRequest);
-        _IoReleaseRemoveLockEx = reinterpret_cast<UINT64>(IoReleaseRemoveLockEx);
+        _KeAcquireSpinLockAtDpcLevel = reinterpret_cast<uint64>(KeAcquireSpinLockAtDpcLevel);
+        _KeReleaseSpinLockFromDpcLevel = reinterpret_cast<uint64>(KeReleaseSpinLockFromDpcLevel);
+        _IofCompleteRequest = reinterpret_cast<uint64>(IofCompleteRequest);
+        _IoReleaseRemoveLockEx = reinterpret_cast<uint64>(IoReleaseRemoveLockEx);
 
 		UNICODE_STRING class_string;
 		RtlInitUnicodeString(&class_string, L"\\Driver\\MouClass");
@@ -91,8 +91,8 @@ namespace mouse
 
 		mid.LastX = x;
 		mid.LastY = y;
-		mid.ButtonFlags = button_flags;
 		mid.Flags = flags;
+		mid.ButtonFlags = button_flags;
 		mid.UnitId = 1;
 
 		KeRaiseIrql(DISPATCH_LEVEL, &irql);
