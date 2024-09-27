@@ -6,5 +6,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\.shared\shared.hpp" />
+    <ClInclude Include="overlay.hpp" />
+    <ClInclude Include="driver.hpp" />
   </ItemGroup>
 </Project>
