@@ -187,6 +187,16 @@ typedef struct _PEB
 	PVOID ApiSetMap;
 } PEB, * PPEB;
 
+typedef VOID(*MouseClassServiceCallbackFn)(PDEVICE_OBJECT DeviceObject, PMOUSE_INPUT_DATA InputDataStart, PMOUSE_INPUT_DATA InputDataEnd, PULONG InputDataConsumed);
+
+typedef struct _MOUSE_OBJECT {
+	PDEVICE_OBJECT mouse_device;
+	MouseClassServiceCallbackFn service_callback;
+	bool use_mouse;
+} MOUSE_OBJECT, * PMOUSE_OBJECT;
+
+MOUSE_OBJECT gMouseObject;
+
 EXTERN_C_START
 
 NTSTATUS NTAPI ZwQuerySystemInformation(ULONG SystemInformationClass, void* SystemInformation, ULONG SystemInformationLength, PULONG ReturnLength);
@@ -198,5 +208,16 @@ NTSTATUS NTAPI IoCreateDriver(PUNICODE_STRING DriverName, PDRIVER_INITIALIZE Ini
 void* NTAPI PsGetProcessSectionBaseAddress(PEPROCESS Process);
 
 void* NTAPI PsGetProcessPeb(PEPROCESS Process);
+
+NTSTATUS
+ObReferenceObjectByName(__in PUNICODE_STRING ObjectName, __in ULONG Attributes, __in_opt PACCESS_STATE AccessState, __in_opt ACCESS_MASK DesiredAccess, __in POBJECT_TYPE ObjectType,
+	__in KPROCESSOR_MODE AccessMode, __inout_opt PVOID ParseContext, __out PVOID* Object);
+
+POBJECT_TYPE* IoDriverObjectType;
+
+UINT64 _KeAcquireSpinLockAtDpcLevel;
+UINT64 _KeReleaseSpinLockFromDpcLevel;
+UINT64 _IofCompleteRequest;
+UINT64 _IoReleaseRemoveLockEx;
 
 EXTERN_C_END

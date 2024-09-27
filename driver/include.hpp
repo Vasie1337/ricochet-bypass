@@ -25,5 +25,6 @@
 #include <kernel/physical/cr3.hpp>
 
 #include <shared.hpp>
+#include <mouse/mouse.hpp>
 #include <handler.hpp>
 #include <hook.hpp>

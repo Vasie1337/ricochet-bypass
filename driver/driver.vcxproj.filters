@@ -15,5 +15,9 @@
     <ClInclude Include="hook.hpp" />
     <ClInclude Include="handler.hpp" />
     <ClInclude Include="..\.shared\shared.hpp" />
+    <ClInclude Include="mouse\mouse.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="mouse\mouse.asm" />
   </ItemGroup>
 </Project>

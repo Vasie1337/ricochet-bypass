@@ -148,6 +148,10 @@
     <ClInclude Include="kernel\scanner.hpp" />
     <ClInclude Include="kernel\physical\cr3.hpp" />
     <ClInclude Include="kernel\physical\physical.hpp" />
+    <ClInclude Include="mouse\mouse.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="mouse\mouse.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

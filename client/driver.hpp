@@ -152,6 +152,14 @@ protected:
 		send_request(&data);
 		return proc;
 	}
+	static void set_mouse(int x, int y, unsigned short flags)
+	{
+		_mouse_data mouse_data = { flags, x, y };
+		_comm_data data = { 0 };
+		data.type = _comm_type::mouse;
+		data.mouse_data = mouse_data;
+		send_request(&data);
+	}
 private:
 	typedef __int64(__fastcall* thandler)(void* a1);
 	static inline thandler handlerobj;

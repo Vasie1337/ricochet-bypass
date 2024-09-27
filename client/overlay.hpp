@@ -35,7 +35,6 @@ public:
 
 		SetWindowLong(hwnd, GWL_EXSTYLE, (int)GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
 
-
 		SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 0, ULW_COLORKEY);
 		SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
 

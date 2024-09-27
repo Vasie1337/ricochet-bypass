@@ -9,9 +9,17 @@ enum class _comm_type
 	cr3,
 	peb,
 	pid,
+	mouse,
 };
 
-struct _comm_data
+struct _mouse_data
+{
+	short flags;
+	int x;
+	int y;
+};
+
+struct _comm_data // ik this is bad but i'm lazy
 {
 	short magic;
 
@@ -23,6 +31,8 @@ struct _comm_data
 	void* src_address;
 
 	char str_buffer[128];
+
+	_mouse_data mouse_data;
 };
 
 constexpr int xor_key = 0x285;
