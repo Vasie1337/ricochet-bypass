@@ -31,7 +31,7 @@ namespace hook
 
 	bool setup(modules::DATA_ENTRY module, void* target)
 	{
-		auto winlogon = modules::get_eprocess("winlogon.exe");
+		PEPROCESS winlogon = modules::get_eprocess("winlogon.exe");
 		if (!winlogon)
 		{
 			printf("Failed to get winlogon.exe process\n");
