@@ -19,7 +19,7 @@ namespace mouse
 			RtlInitUnicodeString(&class_string, L"\\Driver\\MouClass");
 
 			PDRIVER_OBJECT class_driver_object = NULL;
-			NTSTATUS status = ObReferenceObjectByName(&class_string, OBJ_CASE_INSENSITIVE, NULL, 0, *IoDriverObjectType, KernelMode, NULL, (PVOID*)&class_driver_object);
+			NTSTATUS status = ObReferenceObjectByName(&class_string, OBJ_CASE_INSENSITIVE, NULL, 0, IoDriverObjectType, KernelMode, NULL, (PVOID*)&class_driver_object);
 			if (!NT_SUCCESS(status)) {
 				gMouseObject.use_mouse = 0;
 				return 0;
@@ -30,7 +30,7 @@ namespace mouse
 
 			PDRIVER_OBJECT hid_driver_object = NULL;
 
-			status = ObReferenceObjectByName(&hid_string, OBJ_CASE_INSENSITIVE, NULL, 0, *IoDriverObjectType, KernelMode, NULL, (PVOID*)&hid_driver_object);
+			status = ObReferenceObjectByName(&hid_string, OBJ_CASE_INSENSITIVE, NULL, 0, IoDriverObjectType, KernelMode, NULL, (PVOID*)&hid_driver_object);
 			if (!NT_SUCCESS(status)) {
 				if (class_driver_object)
 					ObfDereferenceObject(class_driver_object);

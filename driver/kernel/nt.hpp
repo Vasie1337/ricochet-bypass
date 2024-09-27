@@ -213,7 +213,7 @@ NTSTATUS
 ObReferenceObjectByName(__in PUNICODE_STRING ObjectName, __in ULONG Attributes, __in_opt PACCESS_STATE AccessState, __in_opt ACCESS_MASK DesiredAccess, __in POBJECT_TYPE ObjectType,
 	__in KPROCESSOR_MODE AccessMode, __inout_opt PVOID ParseContext, __out PVOID* Object);
 
-POBJECT_TYPE* IoDriverObjectType;
+POBJECT_TYPE IoDriverObjectType;
 
 UINT64 _KeAcquireSpinLockAtDpcLevel;
 UINT64 _KeReleaseSpinLockFromDpcLevel;
